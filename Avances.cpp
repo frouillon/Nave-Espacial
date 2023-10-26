@@ -2,6 +2,7 @@
 #include <windows.h> //Se puede mandar a imprimir al cursor a una posicion
 #include <conio.h>	//Facilidad para detectar si se presionan las teclas
 #include <iostream>
+#include <string>
 using namespace std;
 
 #define ARRIBA    72
@@ -125,7 +126,7 @@ void AST::mover() {
 }
 
 int main() {
-
+	string nick[3];
 	bool repetir= true;
 	Cuadro(0,0,119,24);
 	Cuadro(20,1,100,3);
@@ -163,9 +164,14 @@ int main() {
         				game_over = true; // Colisión detectada, el juego termina
    					 }
     			}
+				system("CLS");
+				gotoxy(30,10);
+				printf("Puntaje: %d", puntaje);
+				gotoxy(30,12);
+				printf("Ingrese su nickname: ");
+				scanf("%s",nick);
+				printf("\n");
 
-				
-				
 				system("pause");
 				break;
 			}
