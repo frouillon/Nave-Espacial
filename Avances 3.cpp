@@ -11,27 +11,24 @@ using namespace std;
 #define ABAJO     80
 #define ENTER 13
 //Menu
-void menu();
-float operacion(float);
 void Cuadro(int x1,int y1,int x2,int y2);
-void gotoxy(int x,int y);
 int menu_principal(const char *titulo[], const char *opciones[], int num);
 //Nos permite decidir donde comienza el cursor
 void gotoxy(int x, int y) {
     HANDLE hCon;	
     hCon = GetStdHandle(STD_OUTPUT_HANDLE);	//Recupera el identificador de la consola (tomamos control de la salida de la consola)
     COORD dwPos;	//Es una estructura
-    dwPos.X = x;	//Posici�n en x
-    dwPos.Y = y;	//Posici�n en y
-    SetConsoleCursorPosition(hCon, dwPos);	//Funci�n de la librer�a windows (Par�metros)
+    dwPos.X = x;	//Posiciï¿½n en x
+    dwPos.Y = y;	//Posiciï¿½n en y
+    SetConsoleCursorPosition(hCon, dwPos);	//Funciï¿½n de la librerï¿½a windows (Parï¿½metros)
 }
 //Ocultamos el cursor
 void OcultarCursor() {
     HANDLE hCon;
     hCon = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursor;		//Estructura (puede controlar el tama�o del cursor o si aparece)
+    CONSOLE_CURSOR_INFO cursor;		//Estructura (puede controlar el tamaï¿½o del cursor o si aparece)
     cursor.bVisible = FALSE; // controla si se ve el cursor o no 
-    SetConsoleCursorInfo(hCon, &cursor);	//Funci�n de la biblioteca
+    SetConsoleCursorInfo(hCon, &cursor);	//Funciï¿½n de la biblioteca
 }
 //Hacemos los limites
 void pintar_limites() {
@@ -55,6 +52,7 @@ class Nave
 	int getX() { return x; }
     int getY() { return y; }
 	void mover();
+	void muerte();
 };
 //Constructor de la clase Nave
 Nave::Nave(int a, int b)
@@ -82,13 +80,29 @@ void Nave::mover()
 	if (kbhit()) //Comprueba en la consola si se ha presionado una tecla recientemente
 	{
         char tecla = getch();
-		eliminar();	//Se borra la posici�n anterior de la nave
+		eliminar();	//Se borra la posiciï¿½n anterior de la nave
         if (tecla == IZQUIERDA && x>3) x--;
         if (tecla == DERECHA && x+6<77) x++;
         if (tecla == ARRIBA && y>3) y--;
         if (tecla == ABAJO && y+3<23) y++;
-        pintar();	//Se imprime la posici�n actual de la nave
+        pintar();	//Se imprime la posiciï¿½n actual de la nave
+        
     }
+}
+//Muerte de la nave
+void Nave::muerte()
+{
+	eliminar();
+	gotoxy(x,y); printf("   **   ");
+	gotoxy(x,y+1); printf("  ****  ");
+	gotoxy(x,y+2); printf("   **   ");
+	Sleep(200);
+	
+	eliminar();
+	gotoxy(x,y); printf("*      *");
+	gotoxy(x,y+1); printf("  ****  ");
+	gotoxy(x,y+2); printf("*      *");
+	Sleep(200);
 }
 //Hacemos los asteroides
 class AST {
@@ -122,11 +136,12 @@ void AST::mover() {
         x = rand() % 71 + 3;
         y = 4;
     }
+    
     pintar();
 }
 
 int main() {
-	string nick[3];
+
 	bool repetir= true;
 	Cuadro(0,0,119,24);
 	Cuadro(20,1,100,3);
@@ -143,7 +158,7 @@ int main() {
 				system("cls");
 				OcultarCursor();
 			    pintar_limites();	//Llamamos a la funcion que se encarga de digitar los limites
-			    Nave n(30,15);		//Se imprime la primera posici�n de la nave
+			    Nave n(30,15);		//Se imprime la primera posiciï¿½n de la nave
 			    n.pintar();		//Llamamos a la funcion que se encarga de digitar la nave
 			    AST ast(10, 5);
 			    bool game_over = false;
@@ -155,23 +170,19 @@ int main() {
 			        puntaje += 1;
 			        //ast.reiniciar();
 			        
-					// Imprimir puntaje en cada iteraci�n
+					// Imprimir puntaje en cada iteraciï¿½n
 					gotoxy(1, 1);
 					printf("Puntaje: %d", puntaje);
 					Sleep(30);	//Menos iteraciones por segundo
 
 					if (n.getX() + 4 >= ast.getX() && n.getX() <= ast.getX() && n.getY() <= ast.getY() + 0 && n.getY() + 3 >= ast.getY()) {
-        				game_over = true; // Colisión detectada, el juego termina
+        				n.muerte();
+						game_over = true; // Colision detectada, el juego termina
    					 }
     			}
 				system("CLS");
-				gotoxy(30,10);
 				printf("Puntaje: %d", puntaje);
-				gotoxy(30,12);
-				printf("Ingrese su nickname: ");
-				scanf("%s",nick);
-				printf("\n");
-
+				
 				system("pause");
 				break;
 			}
@@ -242,4 +253,3 @@ void Cuadro(int x1,int y1,int x2,int y2){
     gotoxy(x2,y1); printf("\277");
     gotoxy(x2,y2); printf("\331");
 }
-
