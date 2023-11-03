@@ -2,6 +2,9 @@
 #include <windows.h> //Se puede mandar a imprimir al cursor a una posicion
 #include <conio.h>	//Facilidad para detectar si se presionan las teclas
 #include <iostream>
+#include <fstream> //Para el manejo de archivos
+#include <string>
+
 using namespace std;
 
 #define ARRIBA    72
@@ -139,62 +142,6 @@ void AST::mover() {
     pintar();
 }
 
-int main() {
-
-	bool repetir= true;
-	Cuadro(0,0,119,24);
-	Cuadro(20,1,100,3);
-	int option;
-	const char *titulo[] = {"   ********      **     **           **       ********      **  ","  **//////**    ****   /**          ****     **//////**    **** ",
-	" **      //    **//**  /**         **//**   **      //    **//**  ","/**           **  //** /**        **  //** /**           **  //** ","/**    ***** **********/**       **********/**    ***** **********",
-	"//**  ////**/**//////**/**      /**//////**//**  ////**/**//////**"," //******** /**     /**/********/**     /** //******** /**     /**","  ////////  //      // //////// //      //   ////////  //      // "};
-	const char *opciones[] = {"Comenzar","Salir"};
-	int num=2;
-	do{
-		option=menu_principal(titulo, opciones, num);
-		switch(option){
-			case 1:{
-				system("cls");
-				OcultarCursor();
-			    pintar_limites();	//Llamamos a la funcion que se encarga de digitar los limites
-			    Nave n(30,15);		//Se imprime la primera posiciï¿½n de la nave
-			    n.pintar();		//Llamamos a la funcion que se encarga de digitar la nave
-			    AST ast(10, 5);
-			    bool game_over = false;
-			    int puntaje = 0;
-			
-			    while (game_over==false){
-			        ast.mover();
-			        n.mover();
-			        puntaje += 1;
-			        //ast.reiniciar();
-			        
-					// Imprimir puntaje en cada iteraciï¿½n
-					gotoxy(1, 1);
-					printf("Puntaje: %d", puntaje);
-					Sleep(30);	//Menos iteraciones por segundo
-
-					if (n.getX() + 4 >= ast.getX() && n.getX() <= ast.getX() && n.getY() <= ast.getY() + 0 && n.getY() + 3 >= ast.getY()) {
-        				n.muerte();
-						game_over = true; // Colision detectada, el juego termina
-   					 }
-    			}
-				system("CLS");
-				printf("Puntaje: %d", puntaje);
-				
-				system("pause");
-				break;
-			}
-			case 2:
-				repetir=false;
-				break;
-			
-		}
-	}while(repetir);
-    
-
-    return 0;
-}
 int menu_principal(const char *titulo[], const char *opciones[], int num){
 	int seleccion = 1;
 	int tecla;
@@ -251,4 +198,96 @@ void Cuadro(int x1,int y1,int x2,int y2){
     gotoxy(x1,y2); printf("\300");
     gotoxy(x2,y1); printf("\277");
     gotoxy(x2,y2); printf("\331");
+}
+
+void GuardarPuntajes(const char *nickname, int puntaje){
+	ofstream archivo;
+	archivo.open("puntajes.txt", ios::app);  // Abre el archivo en modo de anexar
+    if (archivo.is_open()) {
+        archivo << nickname << " " << puntaje << endl;  // Escribe los datos del jugador en el archivo
+        archivo.close();  // Cierra el archivo
+    } else {
+        cout << "No se pudo abrir el archivo para guardar los datos del jugador." << endl;
+    }
+}
+
+void MostrarPuntajes(){
+	ifstream archivoPuntajes("puntajes.txt");
+	if (archivoPuntajes.is_open()) {
+		string linea;
+					
+		// Lee y muestra los puntajes línea por línea
+		while (getline(archivoPuntajes, linea)) {
+			cout << linea << endl;
+		}
+
+		archivoPuntajes.close();
+	} else {
+		cout << "No se pudo abrir el archivo de puntajes." << endl;
+	}
+}
+
+int main() {
+
+	bool repetir= true;
+	Cuadro(0,0,119,24);
+	Cuadro(20,1,100,3);
+	int option;
+	const char *titulo[] = {"   ********      **     **           **       ********      **  ","  **//////**    ****   /**          ****     **//////**    **** ",
+	" **      //    **//**  /**         **//**   **      //    **//**  ","/**           **  //** /**        **  //** /**           **  //** ","/**    ***** **********/**       **********/**    ***** **********",
+	"//**  ////**/**//////**/**      /**//////**//**  ////**/**//////**"," //******** /**     /**/********/**     /** //******** /**     /**","  ////////  //      // //////// //      //   ////////  //      // "};
+	const char *opciones[] = {"Comenzar","Salir"};
+	int num=2;
+	do{
+		option=menu_principal(titulo, opciones, num);
+		switch(option){
+			case 1:{
+				system("cls");
+				OcultarCursor();
+			    pintar_limites();	//Llamamos a la funcion que se encarga de digitar los limites
+			    Nave n(30,15);		//Se imprime la primera posiciï¿½n de la nave
+			    n.pintar();		//Llamamos a la funcion que se encarga de digitar la nave
+			    AST ast(10, 5);
+			    bool game_over = false;
+			    int puntaje = 0, time = 50;
+				char nickname[3];
+			
+			    while (game_over==false){
+			        ast.mover();
+			        n.mover();
+			        puntaje += 1;
+			        //ast.reiniciar();
+			        
+					// Imprimir puntaje en cada iteraciï¿½n
+					gotoxy(1, 1);
+					printf("Puntaje: %d", puntaje);
+					if(puntaje == 200){
+						time -= 35;
+					}
+					Sleep(time);	//Menos iteraciones por segundo
+
+					if (n.getX() + 4 >= ast.getX() && n.getX() <= ast.getX() && n.getY() <= ast.getY() + 0 && n.getY() + 3 >= ast.getY()) {
+        				n.muerte();
+						game_over = true; // Colision detectada, el juego termina
+   					 }
+    			}
+				system("CLS");
+				printf("Puntaje: %d", puntaje);
+				printf("\n");
+				printf("Ingrese su nickname: ");
+				scanf("%s",nickname);
+
+				GuardarPuntajes(nickname,puntaje);
+				system("pause");
+				break;
+			}
+			case 2:
+				repetir=false;
+				break;
+			
+		}
+	}while(repetir);
+    
+
+    return 0;
 }
