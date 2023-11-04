@@ -247,13 +247,15 @@ int main() {
 			    pintar_limites();	//Llamamos a la funcion que se encarga de digitar los limites
 			    Nave n(30,15);		//Se imprime la primera posiciï¿½n de la nave
 			    n.pintar();		//Llamamos a la funcion que se encarga de digitar la nave
-			    AST ast(10, 5);
+			    AST ast1(10, 5), ast2(15,8), ast3(38,11);
 			    bool game_over = false;
 			    int puntaje = 0, time = 50;
 				char nickname[3];
 			
 			    while (game_over==false){
-			        ast.mover();
+			        ast1.mover();
+			        ast2.mover();
+			        ast3.mover();
 			        n.mover();
 			        puntaje += 1;
 			        //ast.reiniciar();
@@ -266,7 +268,10 @@ int main() {
 					}
 					Sleep(time);	//Menos iteraciones por segundo
 
-					if (n.getX() + 4 >= ast.getX() && n.getX() <= ast.getX() && n.getY() <= ast.getY() + 0 && n.getY() + 3 >= ast.getY()) {
+					if ((n.getX() + 4 >= ast1.getX() && n.getX() <= ast1.getX() && n.getY() <= ast1.getY() + 0 && n.getY() + 3 >= ast1.getY())
+					|| (n.getX() + 4 >= ast2.getX() && n.getX() <= ast2.getX() && n.getY() <= ast2.getY() + 0 && n.getY() + 3 >= ast2.getY())
+					|| (n.getX() + 4 >= ast3.getX() && n.getX() <= ast3.getX() && n.getY() <= ast3.getY() + 0 && n.getY() + 3 >= ast3.getY()))
+					{
         				n.muerte();
 						game_over = true; // Colision detectada, el juego termina
    					 }
