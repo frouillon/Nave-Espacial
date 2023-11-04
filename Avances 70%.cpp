@@ -236,8 +236,8 @@ int main() {
 	const char *titulo[] = {"   ********      **     **           **       ********      **  ","  **//////**    ****   /**          ****     **//////**    **** ",
 	" **      //    **//**  /**         **//**   **      //    **//**  ","/**           **  //** /**        **  //** /**           **  //** ","/**    ***** **********/**       **********/**    ***** **********",
 	"//**  ////**/**//////**/**      /**//////**//**  ////**/**//////**"," //******** /**     /**/********/**     /** //******** /**     /**","  ////////  //      // //////// //      //   ////////  //      // "};
-	const char *opciones[] = {"Comenzar","Salir"};
-	int num=2;
+	const char *opciones[] = {"Comenzar","Mostrar Puntajes","Salir"};
+	int num=3;
 	do{
 		option=menu_principal(titulo, opciones, num);
 		switch(option){
@@ -282,9 +282,13 @@ int main() {
 				break;
 			}
 			case 2:
+				system("CLS");
+				MostrarPuntajes();
+				system("pause");
+				break;
+			case 3:
 				repetir=false;
 				break;
-			
 		}
 	}while(repetir);
     
