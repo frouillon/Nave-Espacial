@@ -311,7 +311,7 @@ void GuardarPuntajes(const char *nickname, int puntaje){
 	ofstream archivo;
 	archivo.open("puntajes.txt", ios::app);  // Abre el archivo en modo de anexar
     if (archivo.is_open()) {
-        archivo << nickname << " " << puntaje << endl;  // Escribe los datos del jugador en el archivo
+        archivo << nickname << "   |   " << puntaje << endl;  // Escribe los datos del jugador en el archivo
         archivo.close();  // Cierra el archivo
     } else {
         cout << "No se pudo abrir el archivo para guardar los datos del jugador." << endl;
@@ -322,10 +322,15 @@ void MostrarPuntajes(){
 	ifstream archivoPuntajes("puntajes.txt");
 	if (archivoPuntajes.is_open()) {
 		string linea;
+		int y = 2;
 					
 		// Lee y muestra los puntajes linea por linea
 		while (getline(archivoPuntajes, linea)) {
+			int x = 52;
+            
+            gotoxy(x, y);
 			cout << linea << endl;
+			y++;
 		}
 
 		archivoPuntajes.close();
@@ -361,7 +366,6 @@ int main() {
 			    AST ast1(10, 5), ast2(15,8), ast3(38,11);
 			    bool game_over = false;
 			    int puntaje = 0, time = 50;
-				char nickname[3];
 			
 			    while (game_over==false){
 			        ast1.mover(); ast1.choque(n);
@@ -376,12 +380,12 @@ int main() {
 					// Imprimir puntaje en cada iteracion
 					gotoxy(1, 1);
 					printf("Puntaje: %d", puntaje);
-					if(puntaje==200){
+					if(puntaje%200==0){
 						CambioColor();
 						gotoxy(24,1);
 						printf("Atrapa los meteoritos");
 					}
-					if(puntaje == 300){
+					if(puntaje%200 == 100 || puntaje == 0){
 						RestauraColor();
 						gotoxy(24,1);
 						printf("                     ");
@@ -400,16 +404,35 @@ int main() {
 				system("CLS");
 				printf("Puntaje: %d", puntaje);
 				printf("\n");
-				printf("Ingrese su nickname: ");
-				scanf("%s",nickname);
-
-				GuardarPuntajes(nickname,puntaje);
+				cout<<"Ingrese su nickname (SOLO 3 LETRAS): ";
+				char nickname[3] = {0,0,0};
+				const int maxCaracteres = 3; // Cambia el número a la cantidad deseada
+    			nickname[maxCaracteres + 1]; // +1 para el carácter nulo al final
+				int i = 0;
+				while (i < maxCaracteres) {
+					char ingreso = getch();
+					
+					if (isalpha(ingreso)) {
+						cout << ingreso;
+						nickname[i] = ingreso;
+						i++;
+					}
+				}
+				
+				nickname[i] = '\0';
+				Sleep(200);
+				GuardarPuntajes(strupr(nickname),puntaje);
+				cout<<endl;
 				system("pause");
 				break;
 			}
 			case 2: 
 			{
 				system("CLS");
+				gotoxy(50,0);
+				cout<<"JUGADOR | PUNTAJE";
+				gotoxy(50,1);
+				cout<<"-----------------";
 				MostrarPuntajes();
 				system("pause");
 				break;
