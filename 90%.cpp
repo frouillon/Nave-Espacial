@@ -380,12 +380,12 @@ int main() {
 					// Imprimir puntaje en cada iteracion
 					gotoxy(1, 1);
 					printf("Puntaje: %d", puntaje);
-					if(puntaje%200==0){
+					if(puntaje==200){
 						CambioColor();
 						gotoxy(24,1);
 						printf("Atrapa los meteoritos");
 					}
-					if(puntaje%200 == 100 || puntaje == 0){
+					if(puntaje==300 || puntaje==0){
 						RestauraColor();
 						gotoxy(24,1);
 						printf("                     ");
